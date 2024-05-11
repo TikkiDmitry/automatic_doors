@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users'
+    'users',
+    'rooms',
+    'chat',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -72,7 +75,7 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-MEDIA_ROOT = BASE_DIR / 'users' / 'user_photos'
+MEDIA_ROOT = BASE_DIR / 'users'
 MEDIA_URL = '/user_photos/'
 
 # Database
