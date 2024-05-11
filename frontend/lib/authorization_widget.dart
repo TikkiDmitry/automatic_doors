@@ -1,89 +1,241 @@
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-class LoginForm extends StatelessWidget {
+import 'authorization_model.dart';
+export 'authorization_model.dart';
+
+class AuthorizationWidget extends StatefulWidget {
+  const AuthorizationWidget({super.key});
+
+  @override
+  State<AuthorizationWidget> createState() => _AuthorizationWidgetState();
+}
+
+class _AuthorizationWidgetState extends State<AuthorizationWidget> {
+  late AuthorizationModel _model;
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _model = createModel(context, () => AuthorizationModel());
+
+    _model.textController1 ??= TextEditingController();
+    _model.textFieldFocusNode1 ??= FocusNode();
+
+    _model.textController2 ??= TextEditingController();
+    _model.textFieldFocusNode2 ??= FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _model.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF292929), // Установить цвет фона AppBar
-        title: Text(
-          'TECHNO-DOORS',
-          style: TextStyle(
-            color: Colors.white, // Цвет заголовка белый
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Work Sans',
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Container(
-        color: Color(0xFF292929), // Установить цвет фона для основного тела
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+    return GestureDetector(
+      onTap: () => _model.unfocusNode.canRequestFocus
+          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
+          : FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: Color(0xFF292929),
+        body: SafeArea(
+          top: true,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              TextField(
-                cursorColor: Colors.white, // Цвет курсора белый
-                style: TextStyle(color: Colors.white), // Цвет вводимого текста белый
-                decoration: InputDecoration(
-                  labelText: 'Логин',
-                  labelStyle: TextStyle(
-                    color: Color(0xFFACACAC), // Цвет надписей "Логин" и "Пароль"
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white), // Цвет черточки при наборе
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white), // Цвет нижней черточки
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                cursorColor: Colors.white, // Цвет курсора белый
-                style: TextStyle(color: Colors.white), // Цвет вводимого текста белый
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Пароль',
-                  labelStyle: TextStyle(
-                    color: Color(0xFFACACAC), // Цвет надписей "Логин" и "Пароль"
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white), // Цвет черточки при наборе
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white), // Цвет нижней черточки
+              Align(
+                alignment: AlignmentDirectional(0, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 100, 0, 0),
+                  child: Text(
+                    'TECHNO-DOORS',
+                    style: GoogleFonts.getFont(
+                      'Work Sans',
+                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 34,
+                      fontStyle: FontStyle.normal,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 32.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Действие при нажатии на кнопку "Войти"
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent, // Устанавливаем прозрачный фон
-                  elevation: 0, // Убираем тень кнопки
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0), // Уменьшаем отступы по горизонтали и вертикали
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Закругляем углы кнопки
-                  ),
-                ),
-                child: Container(
-                  width: 130,
-                  height: 55,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10), // Закругляем углы контейнера кнопки
-                    color: Color(0xFF14181B), // Цвет фона кнопки
-                  ),
-                  child: Text('Войти',
-                    style: TextStyle(
-                      color: Colors.white, // Цвет текста кнопки
-                      fontFamily: 'Work Sans',
+              Align(
+                alignment: AlignmentDirectional(0, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(35, 150, 35, 0),
+                  child: TextFormField(
+                    controller: _model.textController1,
+                    focusNode: _model.textFieldFocusNode1,
+                    autofocus: true,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      labelText: 'Логин',
+                      labelStyle:
+                          FlutterFlowTheme.of(context).labelMedium.override(
+                                fontFamily: 'Readex Pro',
+                                color: Color(0xFFACACAC),
+                                fontSize: 17,
+                                letterSpacing: 0,
+                              ),
+                      hintStyle:
+                          FlutterFlowTheme.of(context).labelMedium.override(
+                                fontFamily: 'Readex Pro',
+                                letterSpacing: 0,
+                              ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: FlutterFlowTheme.of(context).alternate,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(0),
                       ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      errorBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: FlutterFlowTheme.of(context).error,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      focusedErrorBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: FlutterFlowTheme.of(context).error,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          fontFamily: 'Readex Pro',
+                          color:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          fontSize: 17,
+                          letterSpacing: 0,
+                        ),
+                    textAlign: TextAlign.start,
+                    validator:
+                        _model.textController1Validator.asValidator(context),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: AlignmentDirectional(0, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(35, 20, 35, 0),
+                  child: Container(
+                    width: double.infinity,
+                    child: TextFormField(
+                      controller: _model.textController2,
+                      focusNode: _model.textFieldFocusNode2,
+                      autofocus: true,
+                      obscureText: false,
+                      decoration: InputDecoration(
+                        labelText: 'Пароль',
+                        labelStyle:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  fontFamily: 'Readex Pro',
+                                  color: Color(0xFFACACAC),
+                                  fontSize: 17,
+                                  letterSpacing: 0,
+                                ),
+                        hintStyle:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  fontFamily: 'Readex Pro',
+                                  letterSpacing: 0,
+                                ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: FlutterFlowTheme.of(context).alternate,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: FlutterFlowTheme.of(context)
+                                .secondaryBackground,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                        errorBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: FlutterFlowTheme.of(context).error,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                        focusedErrorBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: FlutterFlowTheme.of(context).error,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                      ),
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            fontFamily: 'Readex Pro',
+                            color: FlutterFlowTheme.of(context)
+                                .secondaryBackground,
+                            fontSize: 17,
+                            letterSpacing: 0,
+                          ),
+                      textAlign: TextAlign.start,
+                      validator:
+                          _model.textController2Validator.asValidator(context),
+                    ),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Align(
+                  alignment: AlignmentDirectional(0, -1),
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 100, 0, 0),
+                    child: FFButtonWidget(
+                      onPressed: () {
+                        print('Button pressed ...');
+                      },
+                      text: 'Войти',
+                      options: FFButtonOptions(
+                        width: 130,
+                        height: 55,
+                        padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
+                        iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                        color: FlutterFlowTheme.of(context).primaryText,
+                        textStyle: GoogleFonts.getFont(
+                          'Open Sans',
+                          color:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                        elevation: 3,
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -93,10 +245,4 @@ class LoginForm extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: LoginForm(),
-  ));
 }
