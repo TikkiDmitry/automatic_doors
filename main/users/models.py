@@ -45,7 +45,7 @@ class Schedule(models.Model):
     id_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='ID пользователя')
     day_of_week = models.ForeignKey(DayWeek, on_delete=models.CASCADE, verbose_name='День недели')
     room = models.ForeignKey(Rooms, on_delete=models.SET_NULL, null=True, verbose_name='Помещение')
-    date = models.DateTimeField('Дата и время', auto_now_add=True)
+    date = models.DateTimeField('Дата и время')
 
     class Meta:
         verbose_name = 'Расписание'

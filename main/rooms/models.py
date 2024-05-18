@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -13,7 +15,7 @@ class LevelAccess(models.Model):
 
 
 class Rooms(models.Model):
-    number_room = models.IntegerField('Номер помещения')
+    number_room = models.CharField('Номер помещения', max_length=15)
     access_level = models.ForeignKey(LevelAccess, on_delete=models.SET_NULL, null=True, verbose_name='Уровень доступа')
 
     class Meta:
@@ -28,12 +30,12 @@ class AccessToRooms(models.Model):
     id_user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE, verbose_name='ID пользователя')
     number_room = models.ForeignKey(Rooms, on_delete=models.CASCADE, verbose_name='Номер помещения')
     # Нужна маска ввода
-    time = models.CharField('Время')
+    time = models.CharField('Время', max_length=20)
     cause = models.CharField('Причина', max_length=150)
     result = models.BooleanField('Результат')
     cause_acc_den = models.CharField('Причина доступа/отказа', max_length=200)
-    admin_part = models.BooleanField('Решение админа')
-    time_req = models.DateTimeField('Дата и время запроса')
+    admin_part = models.BooleanField('Участие админа', default=False)
+    time_req = models.DateTimeField('Дата и время запроса', auto_now_add=True, null=True)
 
     class Meta:
         verbose_name = 'Запрос на доступ к помещению'

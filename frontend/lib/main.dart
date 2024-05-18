@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/authorization_widget.dart';
+import 'package:frontend/pages/authorization_page.dart';
 
 void main() {
   runApp(const MyApp());

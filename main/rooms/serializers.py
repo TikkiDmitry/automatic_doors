@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import AccessToRooms, LevelAccess, Rooms
-from users.serializers import CustomUserSerializer
 
 
 class LevelAccessSerializer(serializers.ModelSerializer):
@@ -18,7 +17,7 @@ class RoomsSerializer(serializers.ModelSerializer):
 
 
 class AccessToRoomsSerializer(serializers.ModelSerializer):
-    id_user = CustomUserSerializer()
+    id_user = serializers.PrimaryKeyRelatedField(source='CustomUser', read_only=True)
     number_room = RoomsSerializer()
 
     class Meta:

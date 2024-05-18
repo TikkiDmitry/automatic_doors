@@ -20,7 +20,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'fio', 'job_title', 'passport_details', 'address', 'phone_number', 'biometrics', 'photo']
+        fields = '__all__'
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -40,4 +40,4 @@ class EntryExitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EntryExit
-        fields = ['id_user', 'day_of_week', 'date', 'room', 'entry', 'exit', 'main_entry', 'main_exit']
+        fields = ['id_user', 'day_of_the_week', 'date', 'room', 'entry', 'exit', 'main_entry', 'main_exit']

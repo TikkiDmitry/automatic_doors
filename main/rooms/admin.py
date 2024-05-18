@@ -7,7 +7,7 @@ class RoomsAdmin(admin.ModelAdmin):
 
 
 class AccessToRoomsAdmin(admin.ModelAdmin):
-    list_display = ('id_user', 'number_room', 'cause', 'time', 'result', 'cause_acc_den')
+    list_display = ('id_user', 'number_room', 'cause', 'time', 'result', 'cause_acc_den', 'time_req')
 
 
 admin.site.register(LevelAccess)
