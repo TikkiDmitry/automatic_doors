@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:frontend/pages/request_page.dart';
-import 'package:frontend/pages/help_info_page.dart'; // Добавить импорт страницы справочной информации
+import 'package:frontend/pages/help_info_page.dart';
+import 'package:frontend/pages/personal_info_page.dart';
 
 class MainMenuWidget extends StatelessWidget {
   const MainMenuWidget({Key? key}) : super(key: key);
@@ -41,7 +42,10 @@ class MainMenuWidget extends StatelessWidget {
             MainMenuButton(
               text: 'Личная информация',
               onPressed: () {
-                print('Button pressed ...');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PersonalInfoWidget()),
+                );
               },
             ),
             MainMenuButton(
