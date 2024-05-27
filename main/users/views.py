@@ -12,7 +12,8 @@ class CustomUserDetail(generics.RetrieveUpdateAPIView):
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
+# Сделать отправку запроса(нормальная обработка запроса и запись), чат(запись и отображение сообщений) и расписание(не подгружается в другие дни)
+# Сделал расписание, только отображение загрузки можно подредачить
 class CurrentUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -23,10 +24,20 @@ class CurrentUserView(APIView):
 
 
 # Вывод данных
-class ScheduleDetail(generics.RetrieveAPIView):
-    queryset = Schedule.objects.all()
+class ScheduleDetail(generics.ListAPIView):
     serializer_class = ScheduleSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        queryset = Schedule.objects.filter(id_user=user_id).order_by('start_datetime')
+
+        # Фильтрация по дню недели, если указан
+        day_of_week = self.request.query_params.get('day_of_week')
+        if day_of_week:
+            queryset = queryset.filter(day_of_week__day_week=day_of_week)
+
+        return queryset
 
 
 # Отправка и получение данных

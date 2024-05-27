@@ -15,7 +15,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('id_user', 'day_of_week', 'room', 'date')
+    list_display = ('id_user', 'day_of_week', 'room', 'start_datetime', 'end_datetime')
 
 
 class EntryExitAdmin(admin.ModelAdmin):

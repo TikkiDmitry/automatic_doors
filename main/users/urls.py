@@ -10,7 +10,7 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('accounts/<int:pk>/', CustomUserDetail.as_view(), name='customuser-detail'),
-    path('schedule/<int:pk>/', ScheduleDetail.as_view(), name='schedule-detail'),
+    path('schedule/<int:user_id>/', ScheduleDetail.as_view(), name='schedule-detail'),
     path('entryexit/', EntryExitListCreate.as_view(), name='entryexit-list-create'),
     path('current/', CurrentUserView.as_view(), name='current-user'),
 ]

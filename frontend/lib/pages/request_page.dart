@@ -71,7 +71,7 @@ class _RequestFormWidgetState extends State<RequestFormWidget> {
       final roomList = jsonDecode(roomResponse.body);
       print(roomList);
       final room = roomList.firstWhere((room) => room['number_room'] == roomNumber, orElse: () => null);
-      print(room);
+      //print(room);
       if (room == null) {
         _showDialog('Ошибка', 'Помещение не найдено');
         return;
@@ -107,7 +107,7 @@ class _RequestFormWidgetState extends State<RequestFormWidget> {
         final schedule = jsonDecode(scheduleResponse.body);
         final isAvailable = _isRoomAvailable(schedule, timeRange);
         if (isAvailable) {
-          _showDialog('Успех', 'Доступ разрешен');
+          _showDialog('Успешно', 'Доступ разрешен');
         } else {
           _showDialog('Ошибка', 'Помещение занято');
         }
@@ -128,20 +128,42 @@ class _RequestFormWidgetState extends State<RequestFormWidget> {
   void _showDialog(String title, String content) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+      builder: (context) => AlertDialog(
+        title: Text(
+          title,
+          style: TextStyle(
+            fontFamily: 'Work Sans',
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.black, // Цвет заголовка
+          ),
+        ),
+        content: Text(
+          content,
+          style: TextStyle(
+            fontFamily: 'Work Sans',
+            fontSize: 15,
+            color: Colors.black, // Цвет текста сообщения
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'OK',
+              style: TextStyle(
+                fontFamily: 'Work Sans',
+                fontSize: 16,
+                color: Colors.black, // Цвет кнопки
+              ),
             ),
-          ],
-        );
-      },
+          ),
+        ],
+        backgroundColor: Color(0xFFECECEC), // Цвет фона окна
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // Радиус скругления углов
+        ),
+      ),
     );
   }
 
