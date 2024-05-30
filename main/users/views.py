@@ -12,8 +12,11 @@ class CustomUserDetail(generics.RetrieveUpdateAPIView):
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-# Сделать отправку запроса(нормальная обработка запроса и запись), чат(запись и отображение сообщений) и расписание(не подгружается в другие дни)
+# Сделать отправку запроса(нормальная обработка запроса и запись), чат(запись и отображение сообщений)
 # Сделал расписание, только отображение загрузки можно подредачить
+# Форма запроса сделана, нужно только причину доступа/отказа подправить в зависимости от случая: помещение знаято и т.п.
+# И почему то нет доступа по времени, которое от всех кабинетов, а не конкретного кабинета. Нужна фильтрация по id кабинета в запросе расписания
+# Сделана фильтрация, в идеале сделать еще проверку к таблице запросов не запрашивали уже доступ в указанное время
 class CurrentUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -31,6 +34,12 @@ class ScheduleDetail(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.kwargs['user_id']
         queryset = Schedule.objects.filter(id_user=user_id).order_by('start_datetime')
+
+        # Получаем параметр room_id из запроса
+        room_id = self.request.query_params.get('room')
+        # Если room_id задан, фильтруем расписание по этому id помещения
+        if room_id:
+            queryset = queryset.filter(room__id=room_id)
 
         # Фильтрация по дню недели, если указан
         day_of_week = self.request.query_params.get('day_of_week')

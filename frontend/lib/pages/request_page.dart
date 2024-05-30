@@ -4,6 +4,7 @@ import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class RequestFormWidget extends StatefulWidget {
   const RequestFormWidget({Key? key}) : super(key: key);
@@ -59,24 +60,77 @@ class _RequestFormWidgetState extends State<RequestFormWidget> {
     super.dispose();
   }
 
+  Future<void> _recordAccessRequest(int roomId, String timeRange, String reason, bool result, int userId) async {
+    final times = timeRange.split('-');
+    final currentDate = DateTime.now();
+    final startDatetime = DateTime(currentDate.year, currentDate.month, currentDate.day, int.parse(times[0].split(':')[0]), int.parse(times[0].split(':')[1]));
+    final endDatetime = DateTime(currentDate.year, currentDate.month, currentDate.day, int.parse(times[1].split(':')[0]), int.parse(times[1].split(':')[1]));
+
+    try {
+      print("Starting _recordAccessRequest with:");
+      print("roomId: $roomId");
+      print("startDatetime: $startDatetime");
+      print("endDatetime: $endDatetime");
+      print("reason: $reason");
+      print("result: $result");
+      print("userId: $userId");
+
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:8000/api/v1/rooms/access/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_token',
+        },
+        body: jsonEncode({
+          'id_user': userId,
+          'number_room': roomId,
+          'startDatetime': startDatetime.toIso8601String(),
+          'endDatetime': endDatetime.toIso8601String(),
+          'cause': reason,
+          'result': result,
+          'cause_acc_den': result ? 'Разрешено системой' : 'Отказано системой', // Обновленная часть
+        }),
+      );
+
+      print("HTTP POST response status code: ${response.statusCode}");
+      print("HTTP POST response body: ${response.body}");
+
+      if (response.statusCode == 201) {
+        print('Access request recorded successfully');
+      } else {
+        print('Failed to record access request');
+        print('Response status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      _showDialog('Ошибка', 'Произошла ошибка при записи запроса');
+    }
+  }
+
   Future<void> _checkRoomAvailability() async {
     final roomNumber = _textController1.text;
-    final timeRange  = _textController2.text;
+    final timeRange = _textController2.text;
+    final reason = _textController3.text;
 
     int? userId;
+    int? roomId;
 
     // Check if the room exists
-    final roomResponse = await http.get(Uri.parse('http://127.0.0.1:8000/api/v1/rooms/list/'));
+    final roomResponse = await http.get(
+      Uri.parse('http://127.0.0.1:8000/api/v1/rooms/list/'),
+      headers: {'Authorization': 'Bearer $_token'},
+    );
     if (roomResponse.statusCode == 200) {
       final roomList = jsonDecode(roomResponse.body);
-      print(roomList);
       final room = roomList.firstWhere((room) => room['number_room'] == roomNumber, orElse: () => null);
-      //print(room);
       if (room == null) {
         _showDialog('Ошибка', 'Помещение не найдено');
         return;
+      } else {
+        roomId = room['id'];
       }
-      print(_token);
+
       if (_token != null) {
         final response = await http.get(
           Uri.parse('http://127.0.0.1:8000/api/v1/users/current/'),
@@ -85,44 +139,65 @@ class _RequestFormWidgetState extends State<RequestFormWidget> {
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
           userId = data['id'];
-          print('User ID: $userId');
         } else {
           print('Failed to fetch user ID');
-          return; // Exit the function if user ID could not be fetched
+          print('Response status code: ${response.statusCode}');
+          print('Response body: ${response.body}');
+          return;
         }
       } else {
         print('No token found');
-        return; // Exit the function if no token is found
+        return;
       }
 
-      print('User ID: $userId');
       // Check if the room is available
       final scheduleResponse = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/v1/users/schedule/$userId/'),
+        Uri.parse('http://127.0.0.1:8000/api/v1/users/schedule/$userId/?room=$roomId'),
         headers: {'Authorization': 'Bearer $_token'},
       );
 
       if (scheduleResponse.statusCode == 200) {
-        print(scheduleResponse.body);
         final schedule = jsonDecode(scheduleResponse.body);
+        print(schedule);
         final isAvailable = _isRoomAvailable(schedule, timeRange);
         if (isAvailable) {
-          _showDialog('Успешно', 'Доступ разрешен');
+          if (userId != null && roomId != null) {
+            await _recordAccessRequest(roomId, timeRange, reason, true, userId);
+            _showDialog('Успешно', 'Доступ разрешен');
+          }
         } else {
-          _showDialog('Ошибка', 'Помещение занято');
+          if (userId != null && roomId != null) {
+            await _recordAccessRequest(roomId, timeRange, reason, false, userId);
+            _showDialog('Ошибка', 'Помещение занято');
+          }
         }
       } else {
         _showDialog('Ошибка', 'Не удалось получить расписание помещения');
+        print('Response status code: ${scheduleResponse.statusCode}');
+        print('Response body: ${scheduleResponse.body}');
       }
     } else {
       _showDialog('Ошибка', 'Не удалось получить список помещений');
+      print('Response status code: ${roomResponse.statusCode}');
+      print('Response body: ${roomResponse.body}');
     }
   }
 
   bool _isRoomAvailable(List<dynamic> schedule, String timeRange) {
-    // Implement logic to check if the room is available based on the schedule and timeRange
-    // This is a placeholder implementation and should be replaced with actual logic
-    return true; // or false based on your logic
+    final times = timeRange.split('-');
+    final requestedStartTime = times[0].trim();
+    final requestedEndTime = times[1].trim();
+
+    for (var entry in schedule) {
+      final startTime = entry['start_time'];
+      final endTime = entry['end_time'];
+
+      if (!(requestedEndTime.compareTo(startTime) <= 0 || requestedStartTime.compareTo(endTime) >= 0)) {
+        return false; // Room is not available
+      }
+    }
+
+    return true; // Room is available
   }
 
   void _showDialog(String title, String content) {

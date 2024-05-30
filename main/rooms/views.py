@@ -21,4 +21,4 @@ class AccessToRoomsUpdate(generics.RetrieveUpdateAPIView):
 class RoomsList(generics.ListAPIView):
     queryset = Rooms.objects.all()
     serializer_class = RoomsSerializer
-    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]

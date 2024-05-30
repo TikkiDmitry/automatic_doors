@@ -29,8 +29,8 @@ class Rooms(models.Model):
 class AccessToRooms(models.Model):
     id_user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE, verbose_name='ID пользователя')
     number_room = models.ForeignKey(Rooms, on_delete=models.CASCADE, verbose_name='Номер помещения')
-    # Нужна маска ввода
-    time = models.CharField('Время', max_length=20)
+    startDatetime = models.DateTimeField('Дата и время начала')
+    endDatetime = models.DateTimeField('Дата и время окончания')
     cause = models.CharField('Причина', max_length=150)
     result = models.BooleanField('Результат')
     cause_acc_den = models.CharField('Причина доступа/отказа', max_length=200)

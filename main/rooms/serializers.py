@@ -13,13 +13,12 @@ class RoomsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Rooms
-        fields = ['number_room', 'access_level']
+        fields = ['id', 'number_room', 'access_level']
 
 
 class AccessToRoomsSerializer(serializers.ModelSerializer):
-    id_user = serializers.PrimaryKeyRelatedField(source='CustomUser', read_only=True)
-    number_room = RoomsSerializer()
+    number_room = serializers.PrimaryKeyRelatedField(queryset=Rooms.objects.all())
 
     class Meta:
         model = AccessToRooms
-        fields = ['id_user', 'number_room', 'time', 'cause', 'result', 'cause_acc_den', 'admin_part', 'time_req']
+        fields = ['id_user', 'number_room', 'startDatetime', 'endDatetime', 'cause', 'result', 'cause_acc_den', 'admin_part', 'time_req']
