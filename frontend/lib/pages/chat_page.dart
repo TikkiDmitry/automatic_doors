@@ -43,8 +43,6 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _userId = data['id'];
       });
-    } else {
-      _showDialog('Ошибка', 'Не удалось получить информацию о пользователе');
     }
   }
 
@@ -73,15 +71,33 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _sendMessage() async {
     if (_controller.text.isNotEmpty) {
-      setState(() {
-        _messages.insert(0, {
+      final message = _controller.text;
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:8000/api/v1/chat/chat-messages/'),
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
           'sender': _userId,
           'recipient': 1, // assuming the admin has ID 1
-          'message': _controller.text,
-          'time': DateTime.now().toString(),
+          'message': message,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        setState(() {
+          _messages.insert(0, {
+            'sender': _userId,
+            'recipient': 1,
+            'message': message,
+            'time': DateTime.now().toString(),
+          });
+          _controller.clear();
         });
-        _controller.clear();
-      });
+      } else {
+        _showDialog('Ошибка', 'Не удалось отправить сообщение');
+      }
     }
   }
 

@@ -5,9 +5,23 @@ import 'package:frontend/pages/help_info_page.dart';
 import 'package:frontend/pages/personal_info_page.dart';
 import 'package:frontend/pages/schedule_page.dart';
 import 'package:frontend/pages/chat_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/pages/authorization_page.dart';
 
 class MainMenuWidget extends StatelessWidget {
   const MainMenuWidget({Key? key}) : super(key: key);
+
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('jwt_token');
+
+    // Перенаправление на страницу входа
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => AuthorizationWidget()),
+      (Route<dynamic> route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +119,7 @@ class MainMenuWidget extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // Действия при нажатии на текст "Выйти из аккаунта"
-                      print('Logout pressed ...');
+                      _logout(context); // Вызов метода выхода
                     },
                     child: Opacity(
                       opacity: 0.5,
