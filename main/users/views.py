@@ -17,13 +17,17 @@ class CustomUserDetail(generics.RetrieveUpdateAPIView):
 # Форма запроса сделана, нужно только причину доступа/отказа подправить в зависимости от случая: помещение знаято и т.п.
 # И почему то нет доступа по времени, которое от всех кабинетов, а не конкретного кабинета. Нужна фильтрация по id кабинета в запросе расписания
 # Сделана фильтрация, в идеале сделать еще проверку к таблице запросов не запрашивали уже доступ в указанное время
+# Сделан чат, нужно только с жвт токенами разобраться чтобы не выходило из ака
+# Написать функции для сканера
 class CurrentUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         user = request.user
         serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
+        data = serializer.data
+        data['is_superuser'] = user.is_superuser
+        return Response(data)
 
 
 # Вывод данных
